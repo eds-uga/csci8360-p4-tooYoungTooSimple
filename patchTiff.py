@@ -1,3 +1,8 @@
+# tooYoungTooSimple
+# this script is to combine the small images to a large movie
+# the imsave function is different in tifffile and image packages
+# be careful
+
 import tifffile
 import numpy as np
 from glob import glob

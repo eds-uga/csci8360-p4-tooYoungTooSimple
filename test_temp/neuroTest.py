@@ -18,9 +18,6 @@ mpl.use('TKAgg')
 params = [
     #['/Users/songyang/Documents/CSCI8360/Project4/testData/neurofinder.00.00.test', 7, False, False, False, 7, 4],
     #['/Users/songyang/Documents/CSCI8360/Project4/testData/neurofinder.00.01.test', 7, False, False, False, 7, 4],
-    # ['/Users/songyang/Documents/CSCI8360/Project4/trainingData/neurofinder.00.02', 7, False, False, False, 7, 4],
-    # ['/Users/songyang/Documents/CSCI8360/Project4/trainingData/neurofinder.00.03', 7, False, False, False, 7, 4],
-    # ['/Users/songyang/Documents/CSCI8360/Project4/trainingData/neurofinder.00.04', 7, False, False, False, 7, 4],
     #['/Users/songyang/Documents/CSCI8360/Project4/testData/neurofinder.01.00.test', 7.5, False, False, False, 7, 4],
     #['/Users/songyang/Documents/CSCI8360/Project4/testData/neurofinder.01.01.test', 7.5, False, False, False, 7, 4],
     #['/Users/songyang/Documents/CSCI8360/Project4/testData/neurofinder.02.01.test', 8, False, False, False, 6, 4],
@@ -261,95 +258,6 @@ for testIdx in xrange(1):
         regions_CNMF = cse.utilities.nf_masks_to_json(final_masks,
                                                       os.path.join(folder_in, 'regions_CNMF_3.json'))
     print("!!!!!!!!!!!!!!!END!!!!!!!!!!!!")
-
-'''
-def tomask(coords,dims):
-    mask = np.zeros(dims)
-    mask[zip(*coords)] = 1
-    return mask
-
-
-# New Dataset
-for folder_in in base_folders[-2:-1]:
-
-    ref_file = os.path.join(folder_in, 'regions', 'regions_CNMF_1.json')
-    if os.path.exists(ref_file):
-        print folder_in
-        b = load(ref_file)
-        a = load(os.path.join(folder_in, 'regions/regions_ben.json'))
-
-        with open(os.path.join(folder_in, 'regions/regions_ben.json')) as f:
-            regions = json.load(f)
-
-        masks_nf = np.array([tomask(s['coordinates'], dims) for s in regions])
-
-        with open(os.path.join(folder_in, 'regions/regions_CNMF_1.json')) as f:
-            regions = json.load(f)
-
-        masks_1 = np.array([tomask(s['coordinates'], dims) for s in regions])
-
-        with open(os.path.join(folder_in, 'regions/regions_CNMF_2.json')) as f:
-            regions = json.load(f)
-
-        masks_2 = np.array([tomask(s['coordinates'], dims) for s in regions])
-
-        with np.load(os.path.join(folder_in, 'results_analysis_2.npz')) as ld:
-            Cn = ld['Cn']
-            lq, hq = np.percentile(Cn, [5, 90])
-            r_values = ld['r_values']
-            fitness_raw = ld['fitness_raw']
-            fitness_delta = ld['fitness_delta']
-            A2 = ld['A2'][()]
-
-        with np.load(os.path.join(folder_in, 'images/regions_CNMF_2.npz')) as ld:
-            masks_ws = ld['masks_ws']
-            pos_examples = ld['pos_examples']
-
-
-        pl.figure()
-        pl.subplot(2, 2, 2)
-        pl.imshow(Cn, cmap='gray', vmin=lq, vmax=hq)
-        pl.imshow(np.sum(masks_nf, 0), alpha=.3, cmap='hot')
-        pl.title('NF')
-        pl.subplot(2, 2, 1)
-        pl.imshow(Cn, cmap='gray', vmin=lq, vmax=hq)
-        pl.imshow(np.sum(masks_1, 0), alpha=.3, cmap='hot')
-        pl.title('M_1')
-        pl.subplot(2, 2, 3)
-        pl.imshow(Cn, cmap='gray', vmin=lq, vmax=hq)
-        pl.imshow(np.sum(masks_2, 0), alpha=.3, cmap='hot')
-
-        pl.title('M_2')
-        pl.subplot(2, 2, 4)
-        pl.imshow(np.sum(masks_nf, 0) + 2 * np.sum(masks_2, 0))
-        pl.title('M_overlap')
-        # print
-        mtc = match(a, b, threshold=5)
-        re, pr = centers(a, b, threshold=5)
-        incl, excl = shapes(a, b, threshold=5)
-        fscore = 2 * (pr * re) / (pr + re)
-        print 'Exclusion %.3f\nRecall %.3f\nCombined %.3f\nPrecision %.3f\nInclusion %.3f' % (
-        excl, re, fscore, pr, incl)
-
-    else:
-        print ref_file + ' DO NOT EXIST!'
-
-# results = []
-# for folder_in_check in folders_in:
-#     a = load(os.path.join(folder_in_check, 'regions_CNMF.json'))
-#     dset = '.'.join(folder_in_check[:-1].split('.')[1:])
-#     print (dset)
-#     with np.load(os.path.join(folder_in_check, 'regions_CNMF.npz')) as ld:
-#         masks_ws = ld['masks_ws']
-#         pos_examples = ld['pos_examples']
-#         neg_examples = ld['neg_examples']
-#         regions_CNMF = cse.utilities.nf_masks_to_json(masks_ws[pos_examples], os.path.join(folder_in_check, 'tmp.json'))
-#     dd = dict()
-#     dd['dataset'] = dset
-#     dd['regions'] = regions_CNMF
-#     results.append(dd)
-'''
-
 
 
 
