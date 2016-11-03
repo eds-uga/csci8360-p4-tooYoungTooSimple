@@ -18,7 +18,8 @@ Here are the instructions to run the python scripts to apply constrained nonnega
 ## Constrained nonegative matrix factorization
 Here are the reference papers:
 
-**[Simultaneous denoising, deconvolution, and demixing of calcium imaging data](http://dx.doi.org/10.1016/j.neuron.2015.11.037.pdf)**
+**[Simultaneous denoising, deconvolution, and demixing of calcium imaging data](http://ac.els-cdn.com/S0896627315010843/1-s2.0-S0896627315010843-main.pdf?_tid=1bc467d8-a205-11e6-8d05-00000aacb361&acdnat=1478205530_318fdf74450255ecd0e8701682903d40)**
+
 **[A structured matrix factorization framework for large scale calcium imaging data analysis](https://arxiv.org/pdf/1409.2903v1.pdf)**
 
 
