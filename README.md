@@ -13,7 +13,7 @@ Here are the instructions to run the python scripts to apply constrained nonnega
 **run patchTiff.py**
 
 ### Configuration
-**[Calcium imaging analysis toolbox](https://github.com/eds-uga/csci8360-p4-tooYoungTooSimple/tree/master/test_temp/CalBlitz)**
+**[Calcium imaging analysis toolbox](https://github.com/agiovann/Constrained_NMF#installation-on-mac-os)**
 
 ## Constrained nonegative matrix factorization
 Here are the reference papers:
