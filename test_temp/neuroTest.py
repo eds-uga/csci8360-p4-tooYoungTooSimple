@@ -15,15 +15,16 @@ from neurofinder import load, centers, shapes,match
 
 mpl.use('TKAgg')
 
+# The path of all datasets and parameters
 params = [
-    #['/Users/songyang/Documents/CSCI8360/Project4/testData/neurofinder.00.00.test', 7, False, False, False, 7, 4],
-    #['/Users/songyang/Documents/CSCI8360/Project4/testData/neurofinder.00.01.test', 7, False, False, False, 7, 4],
-    #['/Users/songyang/Documents/CSCI8360/Project4/testData/neurofinder.01.00.test', 7.5, False, False, False, 7, 4],
-    #['/Users/songyang/Documents/CSCI8360/Project4/testData/neurofinder.01.01.test', 7.5, False, False, False, 7, 4],
-    #['/Users/songyang/Documents/CSCI8360/Project4/testData/neurofinder.02.01.test', 8, False, False, False, 6, 4],
-    #['/Users/songyang/Documents/CSCI8360/Project4/testData/neurofinder.02.00.test', 8, False, False, False, 6, 4],
-    #['/Users/songyang/Documents/CSCI8360/Project4/testData/neurofinder.03.00.test', 7.5, False, False, False, 7, 4],
-    #['/Users/songyang/Documents/CSCI8360/Project4/testData/neurofinder.04.00.test', 6.75, False, False, False, 6, 4],
+    ['/Users/songyang/Documents/CSCI8360/Project4/testData/neurofinder.00.00.test', 7, False, False, False, 7, 4],
+    ['/Users/songyang/Documents/CSCI8360/Project4/testData/neurofinder.00.01.test', 7, False, False, False, 7, 4],
+    ['/Users/songyang/Documents/CSCI8360/Project4/testData/neurofinder.01.00.test', 7.5, False, False, False, 7, 4],
+    ['/Users/songyang/Documents/CSCI8360/Project4/testData/neurofinder.01.01.test', 7.5, False, False, False, 7, 4],
+    ['/Users/songyang/Documents/CSCI8360/Project4/testData/neurofinder.02.01.test', 8, False, False, False, 6, 4],
+    ['/Users/songyang/Documents/CSCI8360/Project4/testData/neurofinder.02.00.test', 8, False, False, False, 6, 4],
+    ['/Users/songyang/Documents/CSCI8360/Project4/testData/neurofinder.03.00.test', 7.5, False, False, False, 7, 4],
+    ['/Users/songyang/Documents/CSCI8360/Project4/testData/neurofinder.04.00.test', 6.75, False, False, False, 6, 4],
     ['/Users/songyang/Documents/CSCI8360/Project4/testData/neurofinder.04.01.test', 3, False, False, False, 6, 4],
 ]
 
@@ -77,19 +78,17 @@ load_results = False
 save_results = False
 save_mmap = True
 
-for testIdx in xrange(1):
+for testIdx in xrange(len(params)):
     print("!!!!!!!!!!!!!!!START!!!!!!!!!!!!")
     for folder_in, f_r, gsig, K in zip(base_folders[testIdx:(testIdx+1)], f_rates[testIdx:(testIdx+1)], gsigs[testIdx:(testIdx+1)], Ks[testIdx:(testIdx+1)]):
-        # %% LOAD MOVIE HERE USE YOUR METHOD, Movie is frames x dim2 x dim2
+        # LOAD MOVIE HERE USE YOUR METHOD, Movie is frames x dim2 x dim2
         movie_name = os.path.join(folder_in, 'images', 'images_all.tif')
         if save_mmap:
-            # %%
             downsample_factor = final_frate / f_r
             base_name = 'Yr'
             name_new = cse.utilities.save_memmap_each([movie_name], dview=None, base_name=base_name,
                                                       resize_fact=(1, 1, downsample_factor), remove_init=0, idx_xy=None)
             print name_new
-            # %%
             fname_new = cse.utilities.save_memmap_join(name_new, base_name='Yr', n_chunks=6, dview=dview)
         else:
             fname_new = glob(os.path.join(folder_in, 'images', 'Yr_*.mmap'))[0]
@@ -115,9 +114,8 @@ for testIdx in xrange(1):
             gSig = [gsig, gsig]  # expected half size of neurons
             merge_thresh = 0.8  # merging threshold, max correlation allowed
             p = 2  # order of the autoregressive system
-            memory_fact = 0.4  # unitless number accounting how much memory should be used. You will need to try different
-            # values to see which one would work the default is OK for a 16 GB system
-            # %% RUN ALGORITHM ON PATCHES
+            memory_fact = 0.4  
+            # RUN ALGORITHM ON PATCHES
             options_patch = cse.utilities.CNMFSetParms(Y, n_processes, p=0, gSig=gSig, K=K, ssub=1, tsub=4,
                                                        thr=merge_thresh)
             A_tot, C_tot, YrA_tot, b, f, sn_tot, optional_outputs = cse.map_reduce.run_CNMF_patches(fname_new, (d1, d2, T),
@@ -127,7 +125,6 @@ for testIdx in xrange(1):
                                                                                                     memory_fact=memory_fact)
             print 'Number of components:' + str(A_tot.shape[-1])
 
-            # %%
             if save_results:
                 np.savez(os.path.join(folder_in, 'images', 'results_analysis_patch_3.npz'), A_tot=A_tot.todense(),
                          C_tot=C_tot, sn_tot=sn_tot, d1=d1, d2=d2, b=b, f=f, Cn=Cn)
@@ -177,9 +174,6 @@ for testIdx in xrange(1):
         idx_components = np.union1d(idx_components, idx_components_delta)
         idx_components_bad = np.setdiff1d(range(len(traces)), idx_components)
 
-        print(len(idx_components))
-        print len(traces)
-
         A_m = A_m[:, idx_components]
         C_m = C_m[idx_components, :]
 
@@ -190,14 +184,14 @@ for testIdx in xrange(1):
                                                            **options['spatial_params'])
         print time() - t1
 
-        # %% UPDATE TEMPORAL COMPONENTS
+        # UPDATE TEMPORAL COMPONENTS
         options['temporal_params']['p'] = 0
         options['temporal_params']['fudge_factor'] = 0.96  # change ifdenoised traces time constant is wrong
         C2, f2, S2, bl2, c12, neurons_sn2, g21, YrA = cse.temporal.update_temporal_components(Yr, A2, b2, C2, f,
                                                                                               dview=dview, bl=None, c1=None,
                                                                                               sn=None, g=None,
                                                                                               **options['temporal_params'])
-        # %% MERGE AGAIN
+        # MERGE AGAIN
         merged_ROIs2 = [0]
         A_m = A2
         C_m = C2
@@ -209,13 +203,12 @@ for testIdx in xrange(1):
                                                                                         dview=dview,
                                                                                         thr=options['merging']['thr'],
                                                                                         mx=np.Inf)
-            # %% UPDATE TEMPORAL COMPONENTS
         options['temporal_params']['p'] = p
         options['temporal_params']['fudge_factor'] = 0.96  # change if denoised traces time constant is wrong
         C2, f2, S2, bl2, c12, neurons_sn2, g21, YrA = cse.temporal.update_temporal_components(Yr, A2, b2, C2, f2,
                                                                                               dview=dview, bl=None, c1=None,
                                                                                               sn=None, g=None, **options[
-                'temporal_params'])  # %% Order components
+                'temporal_params'])  # Order components
 
         log_files = glob('Yr*_LOG_*')
         for log_file in log_files:
@@ -258,23 +251,4 @@ for testIdx in xrange(1):
         regions_CNMF = cse.utilities.nf_masks_to_json(final_masks,
                                                       os.path.join(folder_in, 'regions_CNMF_3.json'))
     print("!!!!!!!!!!!!!!!END!!!!!!!!!!!!")
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
